@@ -48,6 +48,12 @@
                 <div>
                     Project Type: {{$project->type_id}}
                 </div>
+                <div>
+                    Project Techs:
+                    @foreach ($project->technologies as $tech)
+                        <br>{{$tech->name}}
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>

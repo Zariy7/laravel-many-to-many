@@ -58,6 +58,13 @@
                         <label for="stack" class="form-label">Project Stack</label>
                         <input type="text" name="stack" id="stack">
                     </div>
+                    <div>
+                        <label class="control-label">Project Techs:</label>
+                        @foreach ($techs_db as $tech)
+                            <input type="checkbox" name="technologies[]" id="technology-{{$tech->id}}" value="{{$tech->id}}" class="form-checkbox">
+                            <label for="" class="form-check-label">{{$tech->name}}</label>
+                        @endforeach
+                    </div>
 
                     <input type="submit" class="btn btn-sm btn-primary" value="Add!">
                 </form>

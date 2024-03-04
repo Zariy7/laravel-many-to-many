@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\Type;
+use App\Models\Technology;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Str;
@@ -21,6 +22,7 @@ class ProjectController extends Controller
     {
         $projects_db = Project::all();
 
+
         return view('admin.projects.index', compact('projects_db'));
     }
 
@@ -32,8 +34,9 @@ class ProjectController extends Controller
     public function create()
     {
         $types_db = Type::all();
+        $techs_db = Technology::all();
 
-        return view('admin.projects.create', compact('types_db'));
+        return view('admin.projects.create', compact('types_db', 'techs_db'));
     }
 
     /**
@@ -56,6 +59,10 @@ class ProjectController extends Controller
         $newProject->slug = Str::slug($newProject->title, '-');
 
         $newProject->save();
+
+        if($request->has('technologies')){
+            $newProject->technologies()->attach($data['technologies']);
+        }
 
         return redirect()->route('admin.projects.show', $newProject->id);
     }
@@ -80,8 +87,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types_db = Type::all();
+        $techs_db = Technology::all();
 
-        return view('admin.projects.edit', compact('project', 'types_db'));
+        return view('admin.projects.edit', compact('project', 'types_db', 'techs_db'));
     }
 
     /**
@@ -108,6 +116,10 @@ class ProjectController extends Controller
         $data['slug'] = $project->slug;
         $project->update($data);
 
+        if($request->has('technologies')){
+            $project->technologies()->sync($data['technologies']);
+        }
+
         return redirect()->route('admin.projects.show', $project->id);    
     }
 
@@ -119,6 +131,8 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        $project->technologies()->sync([]);
+
         if($project->image != null){
             Storage::disk('public')->delete($project->image);
         }
