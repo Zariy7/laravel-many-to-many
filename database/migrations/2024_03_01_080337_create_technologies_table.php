@@ -14,6 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('technologies', function (Blueprint $table) {
+            $table->string('name', 50);
+            $table->string('slug', 50);
             $table->id();
             $table->timestamps();
         });
